@@ -1,0 +1,34 @@
+{
+	"name": "AWSCustomerOrderDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AWSCustomerDataInput",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerInput"
+				},
+				{
+					"dataset": {
+						"referenceName": "AWSOrdersDataInput",
+						"type": "DatasetReference"
+					},
+					"name": "OrderInput"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AWSDataGenOutput",
+						"type": "DatasetReference"
+					},
+					"name": "AWSDataGenSink"
+				}
+			],
+			"script": "\n\nsource(output(\n\t\tCustomerID as string,\n\t\tCustomerName as string,\n\t\tContactNum as string,\n\t\tCountry as string,\n\t\tOrderDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomerInput\nsource(output(\n\t\tOrderID as string,\n\t\tCustomerName as string,\n\t\tCountry as string,\n\t\tOrderDate as string,\n\t\tProduct as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> OrderInput\nCustomerInput, OrderInput join(CustomerInput@CustomerName == OrderInput@CustomerName\n\t&& CustomerInput@Country == OrderInput@Country\n\t&& CustomerInput@OrderDate == OrderInput@OrderDate,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> AWSInnerJoin\nAWSInnerJoin select(mapColumn(\n\t\tCustomerID,\n\t\tContactNum,\n\t\tOrderID,\n\t\tCustomerName = OrderInput@CustomerName,\n\t\tCountry = OrderInput@Country,\n\t\tOrderDate = OrderInput@OrderDate,\n\t\tProduct\n\t)) ~> SelectFunction\nSelectFunction sort(asc(CustomerName, true)) ~> SortByName\nSortByName sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tmapColumn(\n\t\tCustomerID,\n\t\tContactNum,\n\t\tOrderID,\n\t\tCustomerName,\n\t\tCountry,\n\t\tOrderDate,\n\t\tProduct\n\t)) ~> AWSDataGenSink"
+		}
+	}
+}

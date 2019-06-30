@@ -1,0 +1,34 @@
+{
+	"name": "AWSCustomersData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AmazonS32",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": "awspipeline00",
+				"folderPath": "awspipeline",
+				"fileName": "CustomerData.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "0553587def3b70f358d4c2db42566fb35c86d6dc8699c934342258b774b74941 awspipeline00 [29/Jun/2019:07:50:31 +0000] 157.49.239.171 0553587def3b70f358d4c2db42566fb35c86d6dc8699c934342258b774b74941 43942E6F93E4ABB0 REST.GET.ACL - \"GET /awspipeline00?acl= HTTP/1.1\" 200 - 867 - 13 - \"-\" \"S3Console/0.4",
+				"type": "String"
+			},
+			{
+				"name": " aws-internal/3 aws-sdk-java/1.11.575 Linux/4.9.137-0.1.ac.218.74.329.metal1.x86_64 OpenJDK_64-Bit_Server_VM/25.212-b03 java/1.8.0_212 vendor/Oracle_Corporation\" - d5BzyfkZhl6BSef5AEGEigy/oej6fy93L2PA6x7DgiyoguN/eIOCA0DZhwfiJrbx2T8hbK8dF/g= SigV4 ECDHE-RSA-AES128-SHA AuthHeader s3.ap-south-1.amazonaws.com TLSv1.2",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
